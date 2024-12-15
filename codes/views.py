@@ -1,12 +1,12 @@
 import qrcode
 import barcode
 from barcode.writer import ImageWriter
-from django.http import HttpResponse, Http404, FileResponse
+from django.http import HttpResponse, FileResponse
 from django.shortcuts import render
 from django.conf import settings
 import os
-from barcode.errors import BarcodeError
-from barcode import get_barcode_class
+from io import BytesIO
+from barcode import Code128
 
 
 # Home page view
@@ -17,33 +17,39 @@ def home(request):
 MEDIA_DIR = os.path.join(settings.BASE_DIR, 'media')
 if not os.path.exists(MEDIA_DIR):
     os.makedirs(MEDIA_DIR)
+from django.conf import settings
 
-# QR Code generation view
 def generate_qr(request):
     download_link = None
-    if request.method == 'POST':
-        name = request.POST['name']
-        email = request.POST['email']
-        phone = request.POST['phone']
-        address = request.POST['address']
-        message = request.POST['message']
+    if request.method == "POST":
+        # Get input data from the form
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        address = request.POST.get('address')
+        message = request.POST.get('message')
 
-        data = f"Name: {name}\nEmail: {email}\nPhone: {phone}\nAddress: {address}\nMessage: {message}"
-        img = qrcode.make(data)
+        # Combine all data into a string for the QR code
+        qr_data = f"Name: {name}\nEmail: {email}\nPhone: {phone}\nAddress: {address}\nMessage: {message}"
 
-        qr_filename = 'qr_code.png'
-        img_path = os.path.join(MEDIA_DIR, qr_filename)
-        img.save(img_path)
+        # Generate the QR code
+        qr = qrcode.make(qr_data)
 
-        download_link = f'/media/{qr_filename}'
+        # Create a filename based on the user's input (e.g., based on name or a unique identifier)
+        qr_filename = f"qr_code_{name.replace(' ', '_')}.png"
+        qr_path = os.path.join(settings.MEDIA_ROOT, qr_filename)
+
+        # Save the QR code image
+        qr.save(qr_path)
+
+        # Provide the download link using MEDIA_URL
+        download_link = f"{settings.MEDIA_URL}{qr_filename}"
+
     return render(request, 'codes/generate_qr.html', {'download_link': download_link})
 
-import os
-from io import BytesIO
-from django.http import FileResponse
-from barcode import Code128
-from barcode.writer import ImageWriter
 
+
+# Barcode generation view
 def generate_barcode(request):
     if request.method == 'POST':
         barcode_number = request.POST['barcode_number']
@@ -63,8 +69,7 @@ def generate_barcode(request):
 
     return render(request, 'codes/generate_barcode.html')
 
-
-
+# File download view
 def download_file(request, filename):
     barcode_path = os.path.join(settings.MEDIA_ROOT, filename)
 

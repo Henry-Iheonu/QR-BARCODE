@@ -4,32 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generate QR Code</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body>
-    <h1>Generate QR Code</h1>
-    <form method="POST">
-        {% csrf_token %}
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required><br>
+<body class="bg-light">
+<div class="container py-5">
+    <h2 class="text-center mb-4"><i class="fas fa-qrcode"></i> Generate QR Code</h2>
 
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required><br>
+    <div class="card shadow-sm p-4">
+        <form method="POST" class="row g-3">
+            {% csrf_token %}
 
-        <label for="phone">Phone:</label>
-        <input type="text" id="phone" name="phone" required><br>
+            <div class="col-md-6">
+                <label for="name" class="form-label"><i class="fas fa-user"></i> Name:</label>
+                <input type="text" id="name" name="name" class="form-control" placeholder="Enter your name" required>
+            </div>
 
-        <label for="address">Address:</label>
-        <input type="text" id="address" name="address" required><br>
+            <div class="col-md-6">
+                <label for="email" class="form-label"><i class="fas fa-envelope"></i> Email:</label>
+                <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email" required>
+            </div>
 
-        <label for="message">Message:</label>
-        <textarea id="message" name="message" required></textarea><br>
+            <div class="col-md-6">
+                <label for="phone" class="form-label"><i class="fas fa-phone"></i> Phone:</label>
+                <input type="text" id="phone" name="phone" class="form-control" placeholder="Enter your phone number" required>
+            </div>
 
-        <button type="submit">Generate QR Code</button>
-    </form>
+            <div class="col-md-6">
+                <label for="address" class="form-label"><i class="fas fa-home"></i> Address:</label>
+                <input type="text" id="address" name="address" class="form-control" placeholder="Enter your address" required>
+            </div>
+
+            <div class="col-12">
+                <label for="message" class="form-label"><i class="fas fa-comment"></i> Message:</label>
+                <textarea id="message" name="message" class="form-control" placeholder="Enter your message" required></textarea>
+            </div>
+
+            <div class="col-12 text-center">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="fas fa-qrcode"></i> Generate QR Code
+                </button>
+            </div>
+        </form>
+    </div>
 
     {% if download_link %}
-        <h2>Download your QR Code:</h2>
-        <a href="{{ download_link }}" download>Click here to download QR Code</a>
-    {% endif %}
+    <div class="alert alert-success mt-4 text-center">
+        <h5><i class="fas fa-download"></i> Download your QR Code:</h5>
+        <a href="{{ download_link }}" class="btn btn-success btn-lg" download>
+            <i class="fas fa-file-download"></i> Click here to download QR Code
+        </a>
+    </div>
+{% endif %}
+
+</div>
+
+<!-- Bootstrap JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
