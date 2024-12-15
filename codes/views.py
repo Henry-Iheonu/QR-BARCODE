@@ -38,32 +38,31 @@ def generate_qr(request):
         download_link = f'/media/{qr_filename}'
     return render(request, 'codes/generate_qr.html', {'download_link': download_link})
 
+import os
+from io import BytesIO
+from django.http import FileResponse
+from barcode import Code128
+from barcode.writer import ImageWriter
+
 def generate_barcode(request):
-    download_link = None
     if request.method == 'POST':
-        product_code = request.POST['product_code']
+        barcode_number = request.POST['barcode_number']
+        
+        # Generate barcode
+        barcode_class = Code128
+        barcode_image = barcode_class(barcode_number, writer=ImageWriter())
 
-        # Ensure the product_code is exactly 13 digits for EAN-13 barcode
-        if len(product_code) != 13:
-            return render(request, 'codes/generate_barcode.html', {
-                'error': 'The barcode number must be exactly 13 digits!'
-            })
+        # Create an in-memory file
+        buffer = BytesIO()
+        barcode_image.write(buffer)
 
-        # Generate barcode (EAN-13 format)
-        BarcodeClass = barcode.get_barcode_class('ean13')
-        generated_barcode = BarcodeClass(product_code, writer=ImageWriter())
+        # Return file as a downloadable response
+        buffer.seek(0)
+        response = FileResponse(buffer, as_attachment=True, filename=f'{barcode_number}_barcode.png')
+        return response
 
-        # Define the barcode file name and its path in the media directory
-        barcode_filename = f'{product_code}_barcode.png'
-        barcode_path = os.path.join(settings.MEDIA_ROOT, barcode_filename)
+    return render(request, 'codes/generate_barcode.html')
 
-        # Save the barcode image to the media folder
-        generated_barcode.save(barcode_path)
-
-        # Provide a download link for the barcode image
-        download_link = f'{settings.MEDIA_URL}{barcode_filename}'
-
-    return render(request, 'codes/generate_barcode.html', {'download_link': download_link})
 
 
 def download_file(request, filename):
