@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>QR & Barcode Generator</title>
+    <style>
+        .button {
+            font-size: 24px;
+            padding: 20px 40px;
+            margin: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to the QR & Barcode Generator</h1>
+    <a href="{% url 'generate_qr' %}">
+        <button class="button">Generate QR Code</button>
+    </a>
+    <a href="{% url 'generate_barcode' %}">
+        <button class="button">Generate Barcode</button>
+    </a>
+</body>
+</html>
