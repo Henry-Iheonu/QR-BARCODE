@@ -16,7 +16,7 @@ SECRET_KEY = 'django-insecure-*ji942hsb_1qk8@5dv%l=&_g7d!&^8fo4sg5qpwyb50b!v@dgw
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['https://qr-barcode.onrender.com']
 
 # Application definition
 
